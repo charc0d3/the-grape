@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Check, AlertTriangle, X as XIcon, ArrowLeft } from 'lucide-react'
 import Typography from '@/components/ui/Typography'
 import Button from '@/components/ui/Button'
@@ -184,6 +185,13 @@ function MatchResultContent() {
               Where to Buy
             </Button>
           )}
+
+          <Link
+            href={`/wines/${result.wine.id}`}
+            className="block text-center font-sans text-body-sm text-wine-primary font-medium hover:underline min-h-[44px] flex items-center justify-center"
+          >
+            View Wine Details
+          </Link>
         </div>
       </div>
 

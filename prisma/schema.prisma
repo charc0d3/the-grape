@@ -30,9 +30,14 @@ model Wine {
   grape       String?
   vintage     Int?
   type        String     // red, white, rosé, sparkling, dessert
-  tastVector  String?    // JSON string of TasteVector
-  imageUrl    String?
-  createdAt   DateTime   @default(now())
+  tastVector         String?    // JSON string of TasteVector
+  imageUrl           String?
+  drinkingWindowStart Int?
+  drinkingWindowEnd   Int?
+  maturityPhase      String?    // young, maturing, peak, declining
+  storagePotential   Int?       // total years wine can be cellared
+  foodPairings       String?    // JSON array of pairing strings
+  createdAt          DateTime   @default(now())
   scans       Scan[]
   feedback    Feedback[]
 }

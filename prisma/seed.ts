@@ -2,6 +2,21 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+function calculateMaturityPhase(vintage: number | null, windowStart: number, windowEnd: number): string {
+  if (!vintage) return 'young'
+  const currentYear = 2026
+  const age = currentYear - vintage
+  const peakStart = windowStart
+  const peakEnd = windowEnd
+  const totalLife = peakEnd + Math.round((peakEnd - peakStart) * 0.5)
+
+  if (age < peakStart * 0.6) return 'young'
+  if (age < peakStart) return 'maturing'
+  if (age <= peakEnd) return 'peak'
+  if (age <= totalLife) return 'declining'
+  return 'declining'
+}
+
 const wines = [
   // RED WINES
   {
@@ -13,6 +28,10 @@ const wines = [
     vintage: 2015,
     type: 'red',
     tastVector: { acidity: 0.6, tannin: 0.8, fruit: 0.7, sweetness: 0.1, body: 0.8, style: 0.2 },
+    drinkingWindowStart: 2030,
+    drinkingWindowEnd: 2055,
+    storagePotential: 40,
+    foodPairings: ['Grilled Lamb', 'Beef Tenderloin', 'Aged Cheese', 'Duck Confit'],
   },
   {
     name: 'Barolo Monfortino 2013',
@@ -23,6 +42,10 @@ const wines = [
     vintage: 2013,
     type: 'red',
     tastVector: { acidity: 0.8, tannin: 0.9, fruit: 0.5, sweetness: 0.05, body: 0.8, style: 0.2 },
+    drinkingWindowStart: 2028,
+    drinkingWindowEnd: 2050,
+    storagePotential: 35,
+    foodPairings: ['Truffle Risotto', 'Braised Beef', 'Wild Mushrooms', 'Parmigiano Reggiano'],
   },
   {
     name: 'Opus One 2018',
@@ -33,6 +56,10 @@ const wines = [
     vintage: 2018,
     type: 'red',
     tastVector: { acidity: 0.5, tannin: 0.7, fruit: 0.8, sweetness: 0.15, body: 0.85, style: 0.15 },
+    drinkingWindowStart: 2026,
+    drinkingWindowEnd: 2045,
+    storagePotential: 30,
+    foodPairings: ['Ribeye Steak', 'Roasted Lamb', 'Dark Chocolate', 'Grilled Portobello'],
   },
   {
     name: 'Malbec Reserva',
@@ -43,6 +70,10 @@ const wines = [
     vintage: 2020,
     type: 'red',
     tastVector: { acidity: 0.5, tannin: 0.6, fruit: 0.85, sweetness: 0.15, body: 0.75, style: 0.15 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2032,
+    storagePotential: 12,
+    foodPairings: ['Grilled Steak', 'Empanadas', 'Blue Cheese', 'Barbecue Ribs'],
   },
   {
     name: 'Chianti Classico Riserva',
@@ -53,6 +84,10 @@ const wines = [
     vintage: 2019,
     type: 'red',
     tastVector: { acidity: 0.75, tannin: 0.65, fruit: 0.6, sweetness: 0.1, body: 0.7, style: 0.2 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2035,
+    storagePotential: 15,
+    foodPairings: ['Pasta Bolognese', 'Grilled Vegetables', 'Pecorino', 'Pizza Margherita'],
   },
   {
     name: 'Pinot Noir Willamette',
@@ -63,6 +98,10 @@ const wines = [
     vintage: 2021,
     type: 'red',
     tastVector: { acidity: 0.7, tannin: 0.3, fruit: 0.7, sweetness: 0.1, body: 0.4, style: 0.2 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2031,
+    storagePotential: 10,
+    foodPairings: ['Roasted Chicken', 'Salmon', 'Mushroom Risotto', 'Gruyère'],
   },
   {
     name: 'Amarone della Valpolicella',
@@ -73,6 +112,10 @@ const wines = [
     vintage: 2018,
     type: 'red',
     tastVector: { acidity: 0.4, tannin: 0.7, fruit: 0.8, sweetness: 0.3, body: 0.95, style: 0.15 },
+    drinkingWindowStart: 2026,
+    drinkingWindowEnd: 2040,
+    storagePotential: 25,
+    foodPairings: ['Braised Short Ribs', 'Aged Gouda', 'Wild Boar', 'Osso Buco'],
   },
   {
     name: 'Rioja Gran Reserva',
@@ -83,6 +126,10 @@ const wines = [
     vintage: 2011,
     type: 'red',
     tastVector: { acidity: 0.65, tannin: 0.5, fruit: 0.4, sweetness: 0.1, body: 0.6, style: 0.3 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2036,
+    storagePotential: 25,
+    foodPairings: ['Lamb Chops', 'Manchego', 'Paella', 'Chorizo'],
   },
   {
     name: 'Syrah Côte-Rôtie',
@@ -93,6 +140,10 @@ const wines = [
     vintage: 2019,
     type: 'red',
     tastVector: { acidity: 0.55, tannin: 0.7, fruit: 0.65, sweetness: 0.1, body: 0.8, style: 0.25 },
+    drinkingWindowStart: 2027,
+    drinkingWindowEnd: 2040,
+    storagePotential: 22,
+    foodPairings: ['Venison', 'Beef Stew', 'Black Olive Tapenade', 'Roquefort'],
   },
   {
     name: 'Zinfandel Old Vine',
@@ -103,6 +154,10 @@ const wines = [
     vintage: 2020,
     type: 'red',
     tastVector: { acidity: 0.5, tannin: 0.55, fruit: 0.9, sweetness: 0.2, body: 0.75, style: 0.2 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2032,
+    storagePotential: 12,
+    foodPairings: ['Barbecue Ribs', 'Pizza', 'Spicy Sausage', 'Cheddar'],
   },
 
   // WHITE WINES
@@ -115,6 +170,10 @@ const wines = [
     vintage: 2020,
     type: 'white',
     tastVector: { acidity: 0.85, tannin: 0.05, fruit: 0.4, sweetness: 0.05, body: 0.5, style: 0.15 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2035,
+    storagePotential: 15,
+    foodPairings: ['Oysters', 'Lobster', 'Grilled Fish', 'Goat Cheese'],
   },
   {
     name: 'Sauvignon Blanc',
@@ -125,6 +184,10 @@ const wines = [
     vintage: 2023,
     type: 'white',
     tastVector: { acidity: 0.9, tannin: 0.0, fruit: 0.75, sweetness: 0.1, body: 0.3, style: 0.1 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2027,
+    storagePotential: 5,
+    foodPairings: ['Salad', 'Sushi', 'Goat Cheese', 'Asparagus'],
   },
   {
     name: 'Riesling Smaragd',
@@ -135,6 +198,10 @@ const wines = [
     vintage: 2021,
     type: 'white',
     tastVector: { acidity: 0.85, tannin: 0.0, fruit: 0.6, sweetness: 0.15, body: 0.45, style: 0.15 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2036,
+    storagePotential: 15,
+    foodPairings: ['Sushi', 'Thai Curry', 'Pork Schnitzel', 'Spicy Asian Food'],
   },
   {
     name: 'Meursault Premier Cru',
@@ -145,6 +212,10 @@ const wines = [
     vintage: 2020,
     type: 'white',
     tastVector: { acidity: 0.6, tannin: 0.05, fruit: 0.5, sweetness: 0.1, body: 0.7, style: 0.2 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2035,
+    storagePotential: 15,
+    foodPairings: ['Lobster Thermidor', 'Roasted Chicken', 'Comté', 'Cream Pasta'],
   },
   {
     name: 'Gewürztraminer Grand Cru',
@@ -155,6 +226,10 @@ const wines = [
     vintage: 2019,
     type: 'white',
     tastVector: { acidity: 0.4, tannin: 0.05, fruit: 0.8, sweetness: 0.45, body: 0.65, style: 0.15 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2032,
+    storagePotential: 12,
+    foodPairings: ['Thai Curry', 'Foie Gras', 'Munster Cheese', 'Spicy Asian Food'],
   },
   {
     name: 'Albariño Rias Baixas',
@@ -165,6 +240,10 @@ const wines = [
     vintage: 2022,
     type: 'white',
     tastVector: { acidity: 0.8, tannin: 0.0, fruit: 0.6, sweetness: 0.1, body: 0.35, style: 0.1 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2027,
+    storagePotential: 5,
+    foodPairings: ['Seafood', 'Grilled Shrimp', 'Ceviche', 'Light Salad'],
   },
   {
     name: 'Viognier Condrieu',
@@ -175,6 +254,10 @@ const wines = [
     vintage: 2021,
     type: 'white',
     tastVector: { acidity: 0.35, tannin: 0.05, fruit: 0.85, sweetness: 0.2, body: 0.7, style: 0.15 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2030,
+    storagePotential: 8,
+    foodPairings: ['Roasted Chicken', 'Lobster', 'Creamy Pasta', 'Soft Cheese'],
   },
   {
     name: 'Grüner Veltliner Federspiel',
@@ -185,6 +268,10 @@ const wines = [
     vintage: 2022,
     type: 'white',
     tastVector: { acidity: 0.75, tannin: 0.0, fruit: 0.5, sweetness: 0.1, body: 0.35, style: 0.1 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2027,
+    storagePotential: 5,
+    foodPairings: ['Wiener Schnitzel', 'Salad', 'Sushi', 'Light Fish'],
   },
 
   // ROSÉ
@@ -197,6 +284,10 @@ const wines = [
     vintage: 2023,
     type: 'rosé',
     tastVector: { acidity: 0.65, tannin: 0.05, fruit: 0.6, sweetness: 0.15, body: 0.3, style: 0.1 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2025,
+    storagePotential: 2,
+    foodPairings: ['Grilled Shrimp', 'Salad Niçoise', 'Light Pasta', 'Fresh Fruit'],
   },
   {
     name: 'Rosé de Bandol',
@@ -207,6 +298,10 @@ const wines = [
     vintage: 2022,
     type: 'rosé',
     tastVector: { acidity: 0.7, tannin: 0.1, fruit: 0.5, sweetness: 0.1, body: 0.4, style: 0.2 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2026,
+    storagePotential: 3,
+    foodPairings: ['Grilled Fish', 'Bouillabaisse', 'Tapenade', 'Mediterranean Salad'],
   },
   {
     name: 'Tavel Rosé',
@@ -217,6 +312,10 @@ const wines = [
     vintage: 2022,
     type: 'rosé',
     tastVector: { acidity: 0.6, tannin: 0.15, fruit: 0.65, sweetness: 0.1, body: 0.5, style: 0.15 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2026,
+    storagePotential: 3,
+    foodPairings: ['Grilled Chicken', 'Charcuterie', 'Roasted Vegetables', 'Paella'],
   },
 
   // SPARKLING
@@ -229,6 +328,10 @@ const wines = [
     vintage: 2012,
     type: 'sparkling',
     tastVector: { acidity: 0.85, tannin: 0.05, fruit: 0.55, sweetness: 0.1, body: 0.55, style: 0.15 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2040,
+    storagePotential: 20,
+    foodPairings: ['Oysters', 'Caviar', 'Lobster', 'Aged Parmesan'],
   },
   {
     name: 'Franciacorta Satèn',
@@ -239,6 +342,10 @@ const wines = [
     vintage: 2018,
     type: 'sparkling',
     tastVector: { acidity: 0.75, tannin: 0.0, fruit: 0.5, sweetness: 0.15, body: 0.4, style: 0.1 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2030,
+    storagePotential: 10,
+    foodPairings: ['Risotto', 'Fresh Seafood', 'Bruschetta', 'Light Appetizers'],
   },
   {
     name: 'Prosecco Superiore',
@@ -249,6 +356,10 @@ const wines = [
     vintage: 2023,
     type: 'sparkling',
     tastVector: { acidity: 0.6, tannin: 0.0, fruit: 0.7, sweetness: 0.3, body: 0.25, style: 0.05 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2025,
+    storagePotential: 2,
+    foodPairings: ['Prosciutto', 'Light Appetizers', 'Fresh Fruit', 'Bruschetta'],
   },
   {
     name: 'Crémant d\'Alsace',
@@ -259,6 +370,10 @@ const wines = [
     vintage: 2021,
     type: 'sparkling',
     tastVector: { acidity: 0.7, tannin: 0.0, fruit: 0.5, sweetness: 0.15, body: 0.35, style: 0.1 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2027,
+    storagePotential: 5,
+    foodPairings: ['Quiche', 'Soft Cheese', 'Light Fish', 'Fresh Fruit'],
   },
 
   // NATURAL/ORANGE WINES
@@ -271,6 +386,10 @@ const wines = [
     vintage: 2021,
     type: 'white',
     tastVector: { acidity: 0.7, tannin: 0.2, fruit: 0.4, sweetness: 0.05, body: 0.5, style: 0.85 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2028,
+    storagePotential: 7,
+    foodPairings: ['Charcuterie', 'Roasted Vegetables', 'Aged Cheese', 'Grilled Fish'],
   },
   {
     name: 'Radikon Ribolla Gialla',
@@ -281,6 +400,10 @@ const wines = [
     vintage: 2017,
     type: 'white',
     tastVector: { acidity: 0.65, tannin: 0.35, fruit: 0.35, sweetness: 0.05, body: 0.6, style: 0.9 },
+    drinkingWindowStart: 2023,
+    drinkingWindowEnd: 2032,
+    storagePotential: 15,
+    foodPairings: ['Pork Belly', 'Aged Cheese', 'Rich Pasta', 'Middle Eastern Food'],
   },
 
   // DESSERT
@@ -293,6 +416,10 @@ const wines = [
     vintage: 2018,
     type: 'white',
     tastVector: { acidity: 0.7, tannin: 0.0, fruit: 0.8, sweetness: 0.9, body: 0.7, style: 0.1 },
+    drinkingWindowStart: 2028,
+    drinkingWindowEnd: 2060,
+    storagePotential: 50,
+    foodPairings: ['Foie Gras', 'Blue Cheese', 'Crème Brûlée', 'Fruit Tart'],
   },
   {
     name: 'Tokaji Aszú 5 Puttonyos',
@@ -303,6 +430,10 @@ const wines = [
     vintage: 2017,
     type: 'white',
     tastVector: { acidity: 0.8, tannin: 0.0, fruit: 0.75, sweetness: 0.85, body: 0.65, style: 0.15 },
+    drinkingWindowStart: 2025,
+    drinkingWindowEnd: 2055,
+    storagePotential: 40,
+    foodPairings: ['Foie Gras', 'Blue Cheese', 'Apricot Desserts', 'Dark Chocolate'],
   },
   {
     name: 'Moscato d\'Asti',
@@ -313,13 +444,28 @@ const wines = [
     vintage: 2023,
     type: 'sparkling',
     tastVector: { acidity: 0.5, tannin: 0.0, fruit: 0.85, sweetness: 0.7, body: 0.2, style: 0.05 },
+    drinkingWindowStart: 2024,
+    drinkingWindowEnd: 2025,
+    storagePotential: 2,
+    foodPairings: ['Fresh Fruit', 'Light Desserts', 'Almond Cake', 'Biscotti'],
   },
 ]
 
 async function main() {
+  console.log('Clearing existing wines...')
+  await prisma.feedback.deleteMany()
+  await prisma.scan.deleteMany()
+  await prisma.wine.deleteMany()
+
   console.log('Seeding wines...')
 
   for (const wine of wines) {
+    const maturityPhase = calculateMaturityPhase(
+      wine.vintage,
+      wine.drinkingWindowStart,
+      wine.drinkingWindowEnd
+    )
+
     await prisma.wine.create({
       data: {
         name: wine.name,
@@ -330,6 +476,11 @@ async function main() {
         vintage: wine.vintage,
         type: wine.type,
         tastVector: JSON.stringify(wine.tastVector),
+        drinkingWindowStart: wine.drinkingWindowStart,
+        drinkingWindowEnd: wine.drinkingWindowEnd,
+        maturityPhase,
+        storagePotential: wine.storagePotential,
+        foodPairings: JSON.stringify(wine.foodPairings),
       },
     })
   }

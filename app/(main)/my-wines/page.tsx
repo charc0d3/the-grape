@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Wine, ShoppingCart, Heart } from 'lucide-react'
 import Typography from '@/components/ui/Typography'
 import Button from '@/components/ui/Button'
@@ -158,14 +159,14 @@ export default function MyWinesPage() {
               style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'forwards' }}
             >
               {/* Top row: badge + wine info */}
-              <div className="flex items-start gap-3">
+              <Link href={`/wines/${scan.wineId}`} className="flex items-start gap-3 group">
                 {scan.score !== null && (
                   <div className="flex-shrink-0 pt-1">
                     <MatchBadge score={scan.score} size="sm" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <Typography variant="h3" className="truncate">
+                  <Typography variant="h3" className="truncate group-hover:text-wine-primary transition-colors">
                     {scan.wineName}
                   </Typography>
                   {scan.producer && (
@@ -174,7 +175,7 @@ export default function MyWinesPage() {
                     </Typography>
                   )}
                 </div>
-              </div>
+              </Link>
 
               {/* Metadata */}
               <div className="mt-3 flex items-center gap-2 flex-wrap">
@@ -213,6 +214,12 @@ export default function MyWinesPage() {
                   <ShoppingCart className="w-4 h-4" />
                   Buy {scan.feedback ? 'again' : ''}
                 </button>
+                <Link
+                  href={`/wines/${scan.wineId}`}
+                  className="font-sans text-body-sm text-wine-primary font-medium hover:underline min-h-[44px] flex items-center"
+                >
+                  View Details
+                </Link>
               </div>
             </div>
           ))}

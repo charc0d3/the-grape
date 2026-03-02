@@ -27,6 +27,15 @@ export interface WinePersonality {
   vector: TasteVector
 }
 
+export type MaturityPhase = 'young' | 'maturing' | 'peak' | 'declining'
+
+export const MATURITY_LABELS: Record<MaturityPhase, { label: string; color: string }> = {
+  young:     { label: 'Young',     color: '#5A9367' },
+  maturing:  { label: 'Maturing',  color: '#C9A961' },
+  peak:      { label: 'Peak',      color: '#6B2737' },
+  declining: { label: 'Declining', color: '#787878' },
+}
+
 export type MatchColor = 'green' | 'yellow' | 'red'
 
 export function getMatchColor(score: number): MatchColor {
