@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String     @id @default(cuid())
+  email                String     @unique
+  passwordHash         String
+  tasteProfile         String?    // JSON string of TasteVector
+  personality          String?    // WinePersonalityId
+  onboardingCompleted  Boolean    @default(false)
+  onboardingAnswers    String?    // JSON string of quiz answers
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  scans                Scan[]
+  feedback             Feedback[]
+}
+
+model Wine {
+  id          String     @id @default(cuid())
+  name        String
+  producer    String?
+  region      String?
+  country     String?
+  grape       String?
+  vintage     Int?
+  type        String     // red, white, rosé, sparkling, dessert
+  tastVector  String?    // JSON string of TasteVector
+  imageUrl    String?
+  createdAt   DateTime   @default(now())
+  scans       Scan[]
+  feedback    Feedback[]
+}
+
+model Scan {
+  id        String   @id @default(cuid())
+  userId    String
+  wineId    String
+  score     Float?
+  matchColor String? // green, yellow, red
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  wine      Wine     @relation(fields: [wineId], references: [id])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  wineId    String
+  rating    String   // thumbs_up, neutral, thumbs_down
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  wine      Wine     @relation(fields: [wineId], references: [id])
+}

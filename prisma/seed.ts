@@ -1,0 +1,347 @@
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+const wines = [
+  // RED WINES
+  {
+    name: 'Château Margaux 2015',
+    producer: 'Château Margaux',
+    region: 'Margaux, Bordeaux',
+    country: 'France',
+    grape: 'Cabernet Sauvignon blend',
+    vintage: 2015,
+    type: 'red',
+    tastVector: { acidity: 0.6, tannin: 0.8, fruit: 0.7, sweetness: 0.1, body: 0.8, style: 0.2 },
+  },
+  {
+    name: 'Barolo Monfortino 2013',
+    producer: 'Giacomo Conterno',
+    region: 'Piedmont',
+    country: 'Italy',
+    grape: 'Nebbiolo',
+    vintage: 2013,
+    type: 'red',
+    tastVector: { acidity: 0.8, tannin: 0.9, fruit: 0.5, sweetness: 0.05, body: 0.8, style: 0.2 },
+  },
+  {
+    name: 'Opus One 2018',
+    producer: 'Opus One Winery',
+    region: 'Napa Valley',
+    country: 'USA',
+    grape: 'Cabernet Sauvignon blend',
+    vintage: 2018,
+    type: 'red',
+    tastVector: { acidity: 0.5, tannin: 0.7, fruit: 0.8, sweetness: 0.15, body: 0.85, style: 0.15 },
+  },
+  {
+    name: 'Malbec Reserva',
+    producer: 'Catena Zapata',
+    region: 'Mendoza',
+    country: 'Argentina',
+    grape: 'Malbec',
+    vintage: 2020,
+    type: 'red',
+    tastVector: { acidity: 0.5, tannin: 0.6, fruit: 0.85, sweetness: 0.15, body: 0.75, style: 0.15 },
+  },
+  {
+    name: 'Chianti Classico Riserva',
+    producer: 'Fontodi',
+    region: 'Tuscany',
+    country: 'Italy',
+    grape: 'Sangiovese',
+    vintage: 2019,
+    type: 'red',
+    tastVector: { acidity: 0.75, tannin: 0.65, fruit: 0.6, sweetness: 0.1, body: 0.7, style: 0.2 },
+  },
+  {
+    name: 'Pinot Noir Willamette',
+    producer: 'Domaine Drouhin',
+    region: 'Willamette Valley',
+    country: 'USA',
+    grape: 'Pinot Noir',
+    vintage: 2021,
+    type: 'red',
+    tastVector: { acidity: 0.7, tannin: 0.3, fruit: 0.7, sweetness: 0.1, body: 0.4, style: 0.2 },
+  },
+  {
+    name: 'Amarone della Valpolicella',
+    producer: 'Allegrini',
+    region: 'Veneto',
+    country: 'Italy',
+    grape: 'Corvina blend',
+    vintage: 2018,
+    type: 'red',
+    tastVector: { acidity: 0.4, tannin: 0.7, fruit: 0.8, sweetness: 0.3, body: 0.95, style: 0.15 },
+  },
+  {
+    name: 'Rioja Gran Reserva',
+    producer: 'López de Heredia',
+    region: 'Rioja',
+    country: 'Spain',
+    grape: 'Tempranillo',
+    vintage: 2011,
+    type: 'red',
+    tastVector: { acidity: 0.65, tannin: 0.5, fruit: 0.4, sweetness: 0.1, body: 0.6, style: 0.3 },
+  },
+  {
+    name: 'Syrah Côte-Rôtie',
+    producer: 'E. Guigal',
+    region: 'Northern Rhône',
+    country: 'France',
+    grape: 'Syrah',
+    vintage: 2019,
+    type: 'red',
+    tastVector: { acidity: 0.55, tannin: 0.7, fruit: 0.65, sweetness: 0.1, body: 0.8, style: 0.25 },
+  },
+  {
+    name: 'Zinfandel Old Vine',
+    producer: 'Ridge Vineyards',
+    region: 'Sonoma County',
+    country: 'USA',
+    grape: 'Zinfandel',
+    vintage: 2020,
+    type: 'red',
+    tastVector: { acidity: 0.5, tannin: 0.55, fruit: 0.9, sweetness: 0.2, body: 0.75, style: 0.2 },
+  },
+
+  // WHITE WINES
+  {
+    name: 'Chablis Grand Cru Les Clos',
+    producer: 'Domaine William Fèvre',
+    region: 'Chablis, Burgundy',
+    country: 'France',
+    grape: 'Chardonnay',
+    vintage: 2020,
+    type: 'white',
+    tastVector: { acidity: 0.85, tannin: 0.05, fruit: 0.4, sweetness: 0.05, body: 0.5, style: 0.15 },
+  },
+  {
+    name: 'Sauvignon Blanc',
+    producer: 'Cloudy Bay',
+    region: 'Marlborough',
+    country: 'New Zealand',
+    grape: 'Sauvignon Blanc',
+    vintage: 2023,
+    type: 'white',
+    tastVector: { acidity: 0.9, tannin: 0.0, fruit: 0.75, sweetness: 0.1, body: 0.3, style: 0.1 },
+  },
+  {
+    name: 'Riesling Smaragd',
+    producer: 'F.X. Pichler',
+    region: 'Wachau',
+    country: 'Austria',
+    grape: 'Riesling',
+    vintage: 2021,
+    type: 'white',
+    tastVector: { acidity: 0.85, tannin: 0.0, fruit: 0.6, sweetness: 0.15, body: 0.45, style: 0.15 },
+  },
+  {
+    name: 'Meursault Premier Cru',
+    producer: 'Domaine Roulot',
+    region: 'Burgundy',
+    country: 'France',
+    grape: 'Chardonnay',
+    vintage: 2020,
+    type: 'white',
+    tastVector: { acidity: 0.6, tannin: 0.05, fruit: 0.5, sweetness: 0.1, body: 0.7, style: 0.2 },
+  },
+  {
+    name: 'Gewürztraminer Grand Cru',
+    producer: 'Trimbach',
+    region: 'Alsace',
+    country: 'France',
+    grape: 'Gewürztraminer',
+    vintage: 2019,
+    type: 'white',
+    tastVector: { acidity: 0.4, tannin: 0.05, fruit: 0.8, sweetness: 0.45, body: 0.65, style: 0.15 },
+  },
+  {
+    name: 'Albariño Rias Baixas',
+    producer: 'Pazo de Señorans',
+    region: 'Galicia',
+    country: 'Spain',
+    grape: 'Albariño',
+    vintage: 2022,
+    type: 'white',
+    tastVector: { acidity: 0.8, tannin: 0.0, fruit: 0.6, sweetness: 0.1, body: 0.35, style: 0.1 },
+  },
+  {
+    name: 'Viognier Condrieu',
+    producer: 'E. Guigal',
+    region: 'Northern Rhône',
+    country: 'France',
+    grape: 'Viognier',
+    vintage: 2021,
+    type: 'white',
+    tastVector: { acidity: 0.35, tannin: 0.05, fruit: 0.85, sweetness: 0.2, body: 0.7, style: 0.15 },
+  },
+  {
+    name: 'Grüner Veltliner Federspiel',
+    producer: 'Domäne Wachau',
+    region: 'Wachau',
+    country: 'Austria',
+    grape: 'Grüner Veltliner',
+    vintage: 2022,
+    type: 'white',
+    tastVector: { acidity: 0.75, tannin: 0.0, fruit: 0.5, sweetness: 0.1, body: 0.35, style: 0.1 },
+  },
+
+  // ROSÉ
+  {
+    name: 'Whispering Angel',
+    producer: 'Château d\'Esclans',
+    region: 'Provence',
+    country: 'France',
+    grape: 'Grenache blend',
+    vintage: 2023,
+    type: 'rosé',
+    tastVector: { acidity: 0.65, tannin: 0.05, fruit: 0.6, sweetness: 0.15, body: 0.3, style: 0.1 },
+  },
+  {
+    name: 'Rosé de Bandol',
+    producer: 'Domaine Tempier',
+    region: 'Bandol, Provence',
+    country: 'France',
+    grape: 'Mourvèdre blend',
+    vintage: 2022,
+    type: 'rosé',
+    tastVector: { acidity: 0.7, tannin: 0.1, fruit: 0.5, sweetness: 0.1, body: 0.4, style: 0.2 },
+  },
+  {
+    name: 'Tavel Rosé',
+    producer: 'Domaine de la Mordorée',
+    region: 'Southern Rhône',
+    country: 'France',
+    grape: 'Grenache blend',
+    vintage: 2022,
+    type: 'rosé',
+    tastVector: { acidity: 0.6, tannin: 0.15, fruit: 0.65, sweetness: 0.1, body: 0.5, style: 0.15 },
+  },
+
+  // SPARKLING
+  {
+    name: 'Dom Pérignon 2012',
+    producer: 'Moët & Chandon',
+    region: 'Champagne',
+    country: 'France',
+    grape: 'Chardonnay/Pinot Noir',
+    vintage: 2012,
+    type: 'sparkling',
+    tastVector: { acidity: 0.85, tannin: 0.05, fruit: 0.55, sweetness: 0.1, body: 0.55, style: 0.15 },
+  },
+  {
+    name: 'Franciacorta Satèn',
+    producer: 'Ca\' del Bosco',
+    region: 'Lombardy',
+    country: 'Italy',
+    grape: 'Chardonnay',
+    vintage: 2018,
+    type: 'sparkling',
+    tastVector: { acidity: 0.75, tannin: 0.0, fruit: 0.5, sweetness: 0.15, body: 0.4, style: 0.1 },
+  },
+  {
+    name: 'Prosecco Superiore',
+    producer: 'Bisol',
+    region: 'Valdobbiadene',
+    country: 'Italy',
+    grape: 'Glera',
+    vintage: 2023,
+    type: 'sparkling',
+    tastVector: { acidity: 0.6, tannin: 0.0, fruit: 0.7, sweetness: 0.3, body: 0.25, style: 0.05 },
+  },
+  {
+    name: 'Crémant d\'Alsace',
+    producer: 'Domaine Weinbach',
+    region: 'Alsace',
+    country: 'France',
+    grape: 'Pinot Blanc blend',
+    vintage: 2021,
+    type: 'sparkling',
+    tastVector: { acidity: 0.7, tannin: 0.0, fruit: 0.5, sweetness: 0.15, body: 0.35, style: 0.1 },
+  },
+
+  // NATURAL/ORANGE WINES
+  {
+    name: 'Gut Oggau Theodora',
+    producer: 'Gut Oggau',
+    region: 'Burgenland',
+    country: 'Austria',
+    grape: 'Grüner Veltliner/Welschriesling',
+    vintage: 2021,
+    type: 'white',
+    tastVector: { acidity: 0.7, tannin: 0.2, fruit: 0.4, sweetness: 0.05, body: 0.5, style: 0.85 },
+  },
+  {
+    name: 'Radikon Ribolla Gialla',
+    producer: 'Radikon',
+    region: 'Friuli',
+    country: 'Italy',
+    grape: 'Ribolla Gialla',
+    vintage: 2017,
+    type: 'white',
+    tastVector: { acidity: 0.65, tannin: 0.35, fruit: 0.35, sweetness: 0.05, body: 0.6, style: 0.9 },
+  },
+
+  // DESSERT
+  {
+    name: 'Sauternes Premier Cru',
+    producer: 'Château Suduiraut',
+    region: 'Sauternes, Bordeaux',
+    country: 'France',
+    grape: 'Sémillon/Sauvignon Blanc',
+    vintage: 2018,
+    type: 'white',
+    tastVector: { acidity: 0.7, tannin: 0.0, fruit: 0.8, sweetness: 0.9, body: 0.7, style: 0.1 },
+  },
+  {
+    name: 'Tokaji Aszú 5 Puttonyos',
+    producer: 'Royal Tokaji',
+    region: 'Tokaj',
+    country: 'Hungary',
+    grape: 'Furmint',
+    vintage: 2017,
+    type: 'white',
+    tastVector: { acidity: 0.8, tannin: 0.0, fruit: 0.75, sweetness: 0.85, body: 0.65, style: 0.15 },
+  },
+  {
+    name: 'Moscato d\'Asti',
+    producer: 'Paolo Saracco',
+    region: 'Piedmont',
+    country: 'Italy',
+    grape: 'Moscato',
+    vintage: 2023,
+    type: 'sparkling',
+    tastVector: { acidity: 0.5, tannin: 0.0, fruit: 0.85, sweetness: 0.7, body: 0.2, style: 0.05 },
+  },
+]
+
+async function main() {
+  console.log('Seeding wines...')
+
+  for (const wine of wines) {
+    await prisma.wine.create({
+      data: {
+        name: wine.name,
+        producer: wine.producer,
+        region: wine.region,
+        country: wine.country,
+        grape: wine.grape,
+        vintage: wine.vintage,
+        type: wine.type,
+        tastVector: JSON.stringify(wine.tastVector),
+      },
+    })
+  }
+
+  console.log(`Seeded ${wines.length} wines`)
+}
+
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
